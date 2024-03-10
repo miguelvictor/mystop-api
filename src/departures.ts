@@ -14,14 +14,14 @@ app.get("/:id", async (c) => {
 
   const cacheKey = `departures:${siteId}`
   const cached = await c.env.KV_DEPARTURES.get(cacheKey)
-  if (cached) return c.json(JSON.parse(cached))
+  if (cached) return c.json(JSON.parse(cached), 200, { "X-KV-Cache": "HIT" })
 
   const departures = await getDepartures(siteId)
   await c.env.KV_DEPARTURES.put(cacheKey, JSON.stringify(departures), {
     expirationTtl: 60,
   })
 
-  return c.json({ departures })
+  return c.json({ departures }, 200, { "X-KV-Cache": "MISS" })
 })
 
 export default app
