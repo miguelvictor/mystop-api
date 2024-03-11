@@ -1,6 +1,0 @@
-name = "mystop-api"
-compatibility_date = "2023-12-01"
-
-[[kv_namespaces]]
-binding = "KV_DEPARTURES"
-id = "5eb5e6af824d48eeb17243a6725178ed"

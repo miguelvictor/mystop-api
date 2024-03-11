@@ -7,7 +7,10 @@ import departures from "./departures"
 const app = new Hono()
 app.use(logger())
 app.use(secureHeaders())
-app.use("/api/*", cors({ origin: "https://mystop.themvqr.com" }))
+app.use(
+  "/api/*",
+  cors({ origin: ["https://mystop.themvqr.com", "http://localhost:5173"] })
+)
 app.route("/api/departures", departures)
 
 export default app

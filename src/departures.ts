@@ -1,11 +1,8 @@
 import { Hono } from "hono"
 import { getDepartures } from "./lib/api/trafiklab/departures"
+import { redis } from "./lib/redis"
 
-type Bindings = {
-  KV_DEPARTURES: KVNamespace
-}
-
-const app = new Hono<{ Bindings: Bindings }>()
+const app = new Hono()
 
 app.get("/:id", async (c) => {
   const siteId = c.req.param("id")
@@ -13,15 +10,13 @@ app.get("/:id", async (c) => {
     return c.json({ error: "Invalid site id" }, 404)
 
   const cacheKey = `departures:${siteId}`
-  const cached = await c.env.KV_DEPARTURES.get(cacheKey)
-  if (cached) return c.json(JSON.parse(cached), 200, { "X-KV-Cache": "HIT" })
+  const cached = await redis.get(cacheKey)
+  if (cached) return c.json(JSON.parse(cached), 200, { "X-Redis-Cache": "HIT" })
 
   const departures = await getDepartures(siteId)
-  await c.env.KV_DEPARTURES.put(cacheKey, JSON.stringify(departures), {
-    expirationTtl: 60,
-  })
+  await redis.set(cacheKey, JSON.stringify(departures), "EX", 10)
 
-  return c.json({ departures }, 200, { "X-KV-Cache": "MISS" })
+  return c.json({ departures }, 200, { "X-Redis-Cache": "MISS" })
 })
 
 export default app
