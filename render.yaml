@@ -1,11 +1,19 @@
 services:
   - type: web
     name: mystop-api
-    env: bun
+    runtime: docker
     region: frankfurt
     plan: free
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: mystop-redis
+          property: url
 
   - type: redis
     name: mystop-redis
     region: frankfurt
     plan: free
+    ipAllowList:
+      - source: 0.0.0.0/0
