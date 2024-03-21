@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: mystop-api
+    env: bun
+    region: frankfurt
+    plan: free
+
+  - type: redis
+    name: mystop-redis
+    region: frankfurt
+    plan: free
