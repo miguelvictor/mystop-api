@@ -9,7 +9,7 @@ services:
         fromService:
           type: redis
           name: mystop-redis
-          property: url
+          property: host
 
   - type: redis
     name: mystop-redis
