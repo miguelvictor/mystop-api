@@ -13,4 +13,5 @@ app.use(
 )
 app.route("/api/departures", departures)
 
-export default app
+const server = Bun.serve({ port: process.env.PORT || 3000, fetch: app.fetch })
+console.log(`Listening on localhost: ${server.port}`)
